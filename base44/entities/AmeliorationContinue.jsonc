@@ -1,0 +1,188 @@
+{
+  "name": "AmeliorationContinue",
+  "type": "object",
+  "properties": {
+    "numero": {
+      "type": "string",
+      "description": "N\u00b0 AC auto-g\u00e9n\u00e9r\u00e9 (AC-AAAA-MM-JJ-XXX)"
+    },
+    "statut": {
+      "type": "string",
+      "enum": [
+        "Brouillon",
+        "\u00c0 traiter",
+        "En cours",
+        "Cl\u00f4tur\u00e9e",
+        "Abandonn\u00e9e"
+      ],
+      "default": "Brouillon",
+      "description": "Statut de la fiche AC"
+    },
+    "processusInitiateur": {
+      "type": "string",
+      "description": "Processus \u00e0 l'origine de la fiche (liste PROCESSUS)"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "Audit interne",
+        "Audit externe",
+        "Revue KPI",
+        "Revue processus",
+        "Revue risques & opportunit\u00e9s",
+        "Accident/Incident",
+        "Satisfaction client",
+        "Veille r\u00e9glementaire",
+        "Autre"
+      ],
+      "description": "Source de l'am\u00e9lioration"
+    },
+    "initiateur": {
+      "type": "string",
+      "description": "Nom de l'initiateur"
+    },
+    "initiateurEmail": {
+      "type": "string",
+      "description": "Email de l'initiateur"
+    },
+    "constat": {
+      "type": "string",
+      "description": "Constat / opportunit\u00e9 identifi\u00e9e"
+    },
+    "descriptionAmelioration": {
+      "type": "string",
+      "description": "Am\u00e9lioration souhait\u00e9e"
+    },
+    "motifCloture": {
+      "type": "string",
+      "description": "Obligatoire si cl\u00f4ture manuelle malgr\u00e9 action(s) non r\u00e9alis\u00e9e(s)"
+    },
+    "dateCloture": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date de cl\u00f4ture (auto ou manuelle), pour le graphique d'\u00e9volution mensuelle"
+    },
+    "responsablesProcessus": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Union des emails responsables des processus assign\u00e9s aux actions li\u00e9es \u2014 recalcul\u00e9e \u00e0 chaque cr\u00e9ation/suppression d'action (acc\u00e8s lecture directe \u00e0 la fiche pour les pilotes de processus concern\u00e9s)"
+    },
+    "pilotesProcessusInitiateur": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Emails des pilotes (responsableEmails) du processus initiateur, fig\u00e9s \u00e0 la cr\u00e9ation de la fiche \u2014 acc\u00e8s lecture \u00ab Mes AC \u00bb pour tous les pilotes du processus initiateur, m\u00eame si un coll\u00e8gue a soumis la fiche"
+    },
+    "brouillonActions": {
+      "type": "array",
+      "description": "Actions saisies dans le brouillon, stock\u00e9es dans la fiche tant qu'elle n'est pas soumise (aucune ActionAmelioration n'est cr\u00e9\u00e9e avant la soumission) ; vid\u00e9 \u00e0 la soumission",
+      "items": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "responsable": {
+            "type": "string"
+          },
+          "dateFinPrevue": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "historique": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "auteur": {
+            "type": "string"
+          },
+          "detail": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "processusInitiateur",
+    "source",
+    "constat",
+    "descriptionAmelioration"
+  ],
+  "rls": {
+    "create": null,
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "data.initiateurEmail": "{{user.email}}"
+        },
+        {
+          "data.pilotesProcessusInitiateur": "{{user.email}}"
+        },
+        {
+          "data.responsablesProcessus": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "qhse"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "direction"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.initiateurEmail": "{{user.email}}"
+        },
+        {
+          "data.responsablesProcessus": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "qhse"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "qhse"
+          }
+        }
+      ]
+    }
+  }
+}

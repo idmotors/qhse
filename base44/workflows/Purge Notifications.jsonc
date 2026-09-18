@@ -1,0 +1,47 @@
+{
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "purge_notifications",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "purge": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "purgeOldNotifications",
+            "args": {
+              "secret": "b44-qhse-scan-9fKm3xQw7vRtE8nZ-2026"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Purge des notifications anciennes",
+            "description": "Supprime les notifications lues de plus de 3 mois"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 7 * * 1",
+      "one_time_date": null,
+      "timezone": "UTC",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Purge hebdomadaire (lundi 07:00 UTC) des notifications lues de plus de 3 mois \u2014 les notifications non lues ne sont jamais supprim\u00e9es, et aucune autre entit\u00e9 n'est touch\u00e9e.",
+  "name": "Purge Notifications"
+}

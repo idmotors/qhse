@@ -1,0 +1,122 @@
+{
+  "name": "Notification",
+  "type": "object",
+  "properties": {
+    "destinataire": {
+      "type": "string",
+      "description": "Email du destinataire"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "Nouvelle NC",
+        "Retard",
+        "Cl\u00f4ture",
+        "Efficacit\u00e9",
+        "Assignation",
+        "Relance",
+        "Ticket",
+        "Changement statut",
+        "Nouvelle AC",
+        "Action AC",
+        "Retard AC",
+        "Cl\u00f4ture AC",
+        "Action imm\u00e9diate r\u00e9alis\u00e9e",
+        "Commentaire"
+      ],
+      "description": "Type de notification"
+    },
+    "titre": {
+      "type": "string",
+      "description": "Titre de la notification"
+    },
+    "message": {
+      "type": "string",
+      "description": "Contenu de la notification"
+    },
+    "lu": {
+      "type": "boolean",
+      "default": false,
+      "description": "Notification lue ou non"
+    },
+    "lienType": {
+      "type": "string",
+      "enum": [
+        "nc",
+        "ticket",
+        "ac"
+      ],
+      "description": "Type de lien"
+    },
+    "lienId": {
+      "type": "string",
+      "description": "ID de la NC, du ticket ou de l'AC li\u00e9e"
+    }
+  },
+  "required": [
+    "destinataire",
+    "type",
+    "titre",
+    "message"
+  ],
+  "rls": {
+    "create": null,
+    "read": {
+      "$or": [
+        {
+          "data.destinataire": "{{user.email}}"
+        },
+        {
+          "$and": [
+            {
+              "user_condition": {
+                "role": "qhse"
+              }
+            },
+            {
+              "data.destinataire": "qhse-broadcast"
+            }
+          ]
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.destinataire": "{{user.email}}"
+        },
+        {
+          "$and": [
+            {
+              "user_condition": {
+                "role": "qhse"
+              }
+            },
+            {
+              "data.destinataire": "qhse-broadcast"
+            }
+          ]
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.destinataire": "{{user.email}}"
+        },
+        {
+          "$and": [
+            {
+              "user_condition": {
+                "role": "qhse"
+              }
+            },
+            {
+              "data.destinataire": "qhse-broadcast"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

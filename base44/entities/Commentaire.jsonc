@@ -1,0 +1,129 @@
+{
+  "name": "Commentaire",
+  "type": "object",
+  "properties": {
+    "entityType": {
+      "type": "string",
+      "enum": [
+        "NC",
+        "AC"
+      ],
+      "description": "Type de la fiche parente (NonConformite ou AmeliorationContinue)"
+    },
+    "entityId": {
+      "type": "string",
+      "description": "ID de la fiche parente (NC ou AC)"
+    },
+    "auteurEmail": {
+      "type": "string",
+      "description": "Email de l'auteur du commentaire"
+    },
+    "auteurNom": {
+      "type": "string",
+      "description": "Nom de l'auteur du commentaire"
+    },
+    "texte": {
+      "type": "string",
+      "description": "Contenu du commentaire"
+    },
+    "responsablesProcessus": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Emails des responsables du processus, copi\u00e9s depuis la fiche parente au moment de la cr\u00e9ation du commentaire (pour la RLS)"
+    },
+    "initiateurEmail": {
+      "type": "string",
+      "description": "Email de l'initiateur, copi\u00e9 depuis la fiche parente au moment de la cr\u00e9ation du commentaire (pour la RLS)"
+    }
+  },
+  "required": [
+    "entityType",
+    "entityId",
+    "texte"
+  ],
+  "rls": {
+    "create": {
+      "$or": [
+        {
+          "data.initiateurEmail": "{{user.email}}"
+        },
+        {
+          "data.responsablesProcessus": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "qhse"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "direction"
+          }
+        }
+      ]
+    },
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "data.initiateurEmail": "{{user.email}}"
+        },
+        {
+          "data.responsablesProcessus": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "qhse"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "direction"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "data.auteurEmail": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "qhse"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "data.auteurEmail": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "qhse"
+          }
+        }
+      ]
+    }
+  }
+}

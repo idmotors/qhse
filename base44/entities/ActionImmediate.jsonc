@@ -1,0 +1,188 @@
+{
+  "name": "ActionImmediate",
+  "type": "object",
+  "properties": {
+    "ncId": {
+      "type": "string",
+      "description": "ID de la NC parente"
+    },
+    "initiateurEmail": {
+      "type": "string",
+      "description": "Email de l'initiateur de la NC parente (acc\u00e8s lecture)"
+    },
+    "responsablesProcessus": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Emails des responsables du processus assign\u00e9 de la NC parente, copi\u00e9s depuis la NC \u00e0 la cr\u00e9ation (acc\u00e8s pilotage : cr\u00e9ation, lecture, mise \u00e0 jour)"
+    },
+    "responsableEmails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Emails des pilotes du processus d\u00e9sign\u00e9 responsable de l'action, fig\u00e9s \u00e0 la cr\u00e9ation (acc\u00e8s lecture + r\u00e9alisation de l'action pour les pilotes d\u00e9sign\u00e9s)"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description de l'action imm\u00e9diate"
+    },
+    "responsable": {
+      "type": "string",
+      "description": "Processus responsable de l'action imm\u00e9diate (peut \u00eatre le processus assign\u00e9 lui-m\u00eame en auto-assignation, ou un autre processus)"
+    },
+    "responsableNom": {
+      "type": "string",
+      "description": "Nom/label du responsable"
+    },
+    "declarePar": {
+      "type": "string",
+      "description": "Processus ou r\u00f4le ayant d\u00e9clar\u00e9 cette action (processus assign\u00e9 ou QHSE)"
+    },
+    "declareParEmail": {
+      "type": "string",
+      "description": "Email de l'auteur de la d\u00e9claration"
+    },
+    "dateFinPrevue": {
+      "type": "string",
+      "format": "date",
+      "description": "\u00c9ch\u00e9ance \u2014 maximum J+2 (48h) apr\u00e8s d\u00e9claration"
+    },
+    "dateRealisationEffective": {
+      "type": "string",
+      "format": "date",
+      "description": "Date de r\u00e9alisation effective"
+    },
+    "statut": {
+      "type": "string",
+      "enum": [
+        "\u00c0 faire",
+        "R\u00e9alis\u00e9e"
+      ],
+      "default": "\u00c0 faire",
+      "description": "Statut de l'action imm\u00e9diate"
+    },
+    "retardNotifie": {
+      "type": "boolean",
+      "default": false,
+      "description": "Indique que le retard de cette action a d\u00e9j\u00e0 donn\u00e9 lieu \u00e0 une notification (garde anti-doublon du scan quotidien ; pas de rappel pr\u00e9ventif pour ce type d'action, vu l'\u00e9ch\u00e9ance courte de 48h)"
+    },
+    "historique": {
+      "type": "array",
+      "description": "Historique des changements (lecture seule)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "ancienStatut": {
+            "type": "string"
+          },
+          "nouveauStatut": {
+            "type": "string"
+          },
+          "auteurEmail": {
+            "type": "string"
+          },
+          "auteurNom": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "ncId",
+    "description",
+    "responsable",
+    "dateFinPrevue"
+  ],
+  "rls": {
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "qhse"
+          }
+        },
+        {
+          "data.responsablesProcessus": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        }
+      ]
+    },
+    "read": {
+      "$or": [
+        {
+          "data.initiateurEmail": "{{user.email}}"
+        },
+        {
+          "data.responsable": "{{user.email}}"
+        },
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "data.responsablesProcessus": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "data.responsableEmails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "qhse"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "direction"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.responsable": "{{user.email}}"
+        },
+        {
+          "data.responsablesProcessus": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "data.responsableEmails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "qhse"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "qhse"
+      }
+    }
+  }
+}

@@ -1,0 +1,466 @@
+{
+  "name": "NonConformite",
+  "type": "object",
+  "properties": {
+    "numero": {
+      "type": "string",
+      "description": "N\u00b0 NC auto-g\u00e9n\u00e9r\u00e9 (NC-YYYY-XXX)"
+    },
+    "titre": {
+      "type": "string",
+      "description": "Titre de la NC"
+    },
+    "dateConstatation": {
+      "type": "string",
+      "format": "date",
+      "description": "Date de constatation de l'\u00e9cart"
+    },
+    "statut": {
+      "type": "string",
+      "enum": [
+        "Ouverte",
+        "En investigation",
+        "En cours de traitement",
+        "En retard",
+        "En v\u00e9rification d'efficacit\u00e9",
+        "Cl\u00f4tur\u00e9e"
+      ],
+      "default": "Ouverte",
+      "description": "Statut actuel de la NC"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "Audit interne",
+        "Audit externe",
+        "Revue KPI",
+        "Revue processus",
+        "Revue risques & opportunit\u00e9s",
+        "Accident/Incident",
+        "Satisfaction client",
+        "Veille r\u00e9glementaire",
+        "Autre"
+      ],
+      "description": "Source de la NC"
+    },
+    "processusDemandeur": {
+      "type": "string",
+      "description": "Processus demandeur (celui qui d\u00e9clare la NC)"
+    },
+    "processusAssign\u00e9": {
+      "type": "string",
+      "description": "Processus assign\u00e9 (celui qui doit traiter la NC)"
+    },
+    "processusConcerne": {
+      "type": "string",
+      "enum": [
+        "SMQ / Am\u00e9lioration continue",
+        "HSE",
+        "Management",
+        "Commerciale",
+        "RH",
+        "Facturation",
+        "Service rapide",
+        "Achat",
+        "Syst\u00e8me d'information",
+        "Op\u00e9ration"
+      ],
+      "description": "Processus concern\u00e9 (backward compat = processus assign\u00e9)"
+    },
+    "departement": {
+      "type": "string",
+      "enum": [
+        "SMQ / Am\u00e9lioration continue",
+        "HSE",
+        "Management",
+        "Commerciale",
+        "RH",
+        "Facturation",
+        "Service rapide",
+        "Achat",
+        "Syst\u00e8me d'information",
+        "Op\u00e9ration"
+      ],
+      "description": "D\u00e9partement concern\u00e9 (backward compat = processus demandeur)"
+    },
+    "pilotesProcessusDemandeur": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Emails des pilotes (responsableEmails) du processus demandeur, fig\u00e9s \u00e0 la cr\u00e9ation de la NC \u2014 acc\u00e8s lecture \u00ab Mes NC \u00bb pour tous les pilotes du processus demandeur, m\u00eame si un coll\u00e8gue a d\u00e9clar\u00e9 la NC"
+    },
+    "responsablesProcessus": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Emails des responsables du processus assign\u00e9, fig\u00e9s \u00e0 la cr\u00e9ation de la NC (base de l'acc\u00e8s lecture + d\u00e9marrage de l'investigation pour le responsable du processus)"
+    },
+    "vuParEmails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Emails des responsables du processus ayant d\u00e9j\u00e0 consult\u00e9 la NC depuis qu'elle est actionnable (pastille 'NC \u00e0 traiter' type non-lu) ; r\u00e9initialis\u00e9 \u00e0 [] \u00e0 chaque transition vers un statut n\u00e9cessitant une action"
+    },
+    "circuitCreation": {
+      "type": "string",
+      "enum": [
+        "Num\u00e9rique",
+        "Papier",
+        "Automatique"
+      ],
+      "default": "Num\u00e9rique"
+    },
+    "initiateur": {
+      "type": "string",
+      "description": "Nom de l'initiateur de la NC"
+    },
+    "initiateurEmail": {
+      "type": "string",
+      "description": "Email de l'initiateur"
+    },
+    "ecartConstate": {
+      "type": "string",
+      "description": "Description de l'\u00e9cart constat\u00e9"
+    },
+    "actionsImmediatesRequises": {
+      "type": "boolean",
+      "description": "Historique (lecture seule) : NC cr\u00e9\u00e9es avant la refonte du workflow \u2014 d\u00e9cision sur les actions imm\u00e9diates prise \u00e0 la cr\u00e9ation par le processus demandeur ; plus aliment\u00e9 \u00e0 la cr\u00e9ation depuis la refonte ; aucune valeur par d\u00e9faut (le champ doit rester absent sur toute NC cr\u00e9\u00e9e depuis la refonte, sinon la d\u00e9cision interactive est bloqu\u00e9e)"
+    },
+    "actionsImmediatesDecidees": {
+      "type": "boolean",
+      "default": false,
+      "description": "D\u00e9cision Oui/Non sur les actions imm\u00e9diates prise apr\u00e8s soumission par le processus assign\u00e9 (ou QHSE) \u2014 d\u00e9bloque \u00ab D\u00e9marrer l'investigation \u00bb ; distinct de l'historique actionsImmediatesRequises"
+    },
+    "actionsImm\u00e9diates": {
+      "type": "array",
+      "description": "Historique (lecture seule) : actions imm\u00e9diates saisies \u00e0 la cr\u00e9ation pour les NC cr\u00e9\u00e9es avant la refonte du workflow ; plus aliment\u00e9 depuis la refonte (les actions imm\u00e9diates vivent d\u00e9sormais dans l'entit\u00e9 ActionImmediate)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "responsable": {
+            "type": "string"
+          },
+          "responsableNom": {
+            "type": "string"
+          },
+          "echeance": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "correctionsImmediates": {
+      "type": "string",
+      "description": "Historique (lecture seule) : texte des corrections imm\u00e9diates saisies \u00e0 la cr\u00e9ation pour les NC cr\u00e9\u00e9es avant la refonte du workflow"
+    },
+    "piecesJointes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL du fichier upload\u00e9"
+          },
+          "nom": {
+            "type": "string",
+            "description": "Nom original du fichier"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "description": "Pi\u00e8ces jointes de la NC (url + nom ; anciens \u00e9l\u00e9ments au format string URL restent accept\u00e9s \u00e0 l'affichage)"
+    },
+    "derogationRequise": {
+      "type": "boolean",
+      "default": false
+    },
+    "derogationDateDebut": {
+      "type": "string",
+      "format": "date"
+    },
+    "derogationDateEcheance": {
+      "type": "string",
+      "format": "date"
+    },
+    "responsableSuivi": {
+      "type": "string"
+    },
+    "methodeAnalyse": {
+      "type": "string",
+      "enum": [
+        "5 Pourquoi",
+        "5M"
+      ],
+      "description": "M\u00e9thode d'analyse des causes (5 Pourquoi ou 5M Fishbone)"
+    },
+    "fiveWhysAnalyses": {
+      "type": "array",
+      "description": "Analyses 5 Pourquoi r\u00e9alis\u00e9es",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "causeText": {
+            "type": "string"
+          },
+          "whys": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "conclusion": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "fishboneCauses": {
+      "type": "object",
+      "description": "Causes par branche du diagramme Fishbone",
+      "properties": {
+        "M\u00e9thode": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "Mati\u00e8re": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "Milieu": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "Main d'\u0153uvre": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "Mat\u00e9riel": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "Management": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "causeRacine": {
+      "type": "string"
+    },
+    "criteresEfficacite": {
+      "type": "string"
+    },
+    "miseAJourDocumentsQualite": {
+      "type": "boolean",
+      "default": false
+    },
+    "documentsQualiteConcernes": {
+      "type": "string"
+    },
+    "echeanceFixeeQHSE": {
+      "type": "string",
+      "format": "date"
+    },
+    "criteresVerification": {
+      "type": "string",
+      "description": "Crit\u00e8res de v\u00e9rification saisis par la QHSE"
+    },
+    "resultatsVerification": {
+      "type": "string",
+      "description": "Commentaire de v\u00e9rification"
+    },
+    "piecesJointesVerification": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL du fichier upload\u00e9"
+          },
+          "nom": {
+            "type": "string",
+            "description": "Nom original du fichier"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "description": "PJ de la v\u00e9rification (url + nom ; anciens \u00e9l\u00e9ments au format string URL restent accept\u00e9s \u00e0 l'affichage)"
+    },
+    "actionEfficace": {
+      "type": "boolean"
+    },
+    "verifiePar": {
+      "type": "string"
+    },
+    "dateVerification": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "clotureValidee": {
+      "type": "boolean",
+      "description": "Cl\u00f4ture valid\u00e9e Oui/Non par QHSE"
+    },
+    "commentaireCloture": {
+      "type": "string",
+      "description": "Commentaire de cl\u00f4ture"
+    },
+    "piecesJointesCloture": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL du fichier upload\u00e9"
+          },
+          "nom": {
+            "type": "string",
+            "description": "Nom original du fichier"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "description": "PJ de la cl\u00f4ture (url + nom ; anciens \u00e9l\u00e9ments au format string URL restent accept\u00e9s \u00e0 l'affichage)"
+    },
+    "dateCloture": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "delaiTraitementEffectif": {
+      "type": "number"
+    },
+    "clotureDansDelai": {
+      "type": "boolean"
+    },
+    "inefficaceActionIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "historique": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "auteur": {
+            "type": "string"
+          },
+          "detail": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "source",
+    "departement",
+    "ecartConstate"
+  ],
+  "rls": {
+    "create": null,
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "data.initiateurEmail": "{{user.email}}"
+        },
+        {
+          "data.pilotesProcessusDemandeur": "{{user.email}}"
+        },
+        {
+          "data.responsableSuivi": "{{user.email}}"
+        },
+        {
+          "data.responsablesProcessus": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "qhse"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "direction"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "data.initiateurEmail": "{{user.email}}"
+        },
+        {
+          "data.responsableSuivi": "{{user.email}}"
+        },
+        {
+          "data.responsablesProcessus": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "qhse"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "qhse"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "role": {
+      "type": "string",
+      "enum": [
+        "collaborateur",
+        "admin_gestion",
+        "qhse",
+        "direction"
+      ],
+      "default": "collaborateur",
+      "description": "Profil utilisateur"
+    }
+  },
+  "required": [],
+  "rls": {
+    "read": null,
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "qhse"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin_gestion"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "qhse"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin_gestion"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "qhse"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin_gestion"
+          }
+        }
+      ]
+    }
+  }
+}

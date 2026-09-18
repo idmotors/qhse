@@ -1,0 +1,71 @@
+{
+  "name": "JournalActivite",
+  "type": "object",
+  "properties": {
+    "auteurEmail": {
+      "type": "string",
+      "description": "Email de l'utilisateur ayant effectu\u00e9 l'action"
+    },
+    "auteurNom": {
+      "type": "string",
+      "description": "Nom de l'utilisateur ayant effectu\u00e9 l'action"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "Cr\u00e9ation NC",
+        "Changement de statut",
+        "Action corrective",
+        "V\u00e9rification efficacit\u00e9",
+        "Cl\u00f4ture NC",
+        "Suppression NC",
+        "Invitation utilisateur",
+        "Suppression utilisateur",
+        "Modification droits",
+        "Gestion processus",
+        "Cr\u00e9ation AC",
+        "Action AC",
+        "Cl\u00f4ture AC"
+      ],
+      "description": "Type d'action enregistr\u00e9e"
+    },
+    "element": {
+      "type": "string",
+      "description": "\u00c9l\u00e9ment concern\u00e9 (n\u00b0 de NC, n\u00b0 d'AC, email utilisateur, ...)"
+    },
+    "details": {
+      "type": "string",
+      "description": "D\u00e9tails compl\u00e9mentaires de l'action"
+    }
+  },
+  "required": [
+    "type"
+  ],
+  "rls": {
+    "create": null,
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "qhse"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin_gestion"
+          }
+        }
+      ]
+    },
+    "update": {
+      "user_condition": {
+        "role": "qhse"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "qhse"
+      }
+    }
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "name": "Processus",
+  "type": "object",
+  "properties": {
+    "nom": {
+      "type": "string",
+      "description": "Nom du processus m\u00e9tier"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description optionnelle du processus"
+    },
+    "responsableEmails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Emails des responsables (pilotes) du processus \u2014 cl\u00e9 de notification in-app + email"
+    },
+    "responsableIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "IDs des utilisateurs responsables du processus (pour l'UI de rattachement)"
+    },
+    "membresEmails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Emails des membres de l'\u00e9quipe du processus, sous-assignables aux actions"
+    },
+    "membresIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "IDs des utilisateurs membres du processus (pour l'affichage nom/avatar dans l'UI)"
+    }
+  },
+  "required": [
+    "nom"
+  ],
+  "rls": {
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "qhse"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin_gestion"
+          }
+        }
+      ]
+    },
+    "read": null,
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "qhse"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin_gestion"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "qhse"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin_gestion"
+          }
+        }
+      ]
+    }
+  }
+}

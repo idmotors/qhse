@@ -1,0 +1,236 @@
+{
+  "name": "ActionAmelioration",
+  "type": "object",
+  "properties": {
+    "acId": {
+      "type": "string",
+      "description": "ID de l'AmeliorationContinue parente"
+    },
+    "initiateurEmail": {
+      "type": "string",
+      "description": "Email de l'initiateur de la fiche AC parente (pour le partage en lecture \u00e0 l'initiateur)"
+    },
+    "responsablesProcessus": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Emails des responsables du processus assign\u00e9 \u00e0 l'action, fig\u00e9s \u00e0 la cr\u00e9ation"
+    },
+    "vuParEmails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Emails des responsables du processus ayant d\u00e9j\u00e0 consult\u00e9 l'action depuis qu'elle est actionnable (pastille 'AC \u00e0 traiter' type non-lu) ; r\u00e9initialis\u00e9 \u00e0 [] \u00e0 chaque (re)passage \u00e0 'En cours'"
+    },
+    "description": {
+      "type": "string",
+      "description": "Titre / description de l'action d'am\u00e9lioration"
+    },
+    "responsable": {
+      "type": "string",
+      "description": "Processus responsable (liste PROCESSUS)"
+    },
+    "responsableNom": {
+      "type": "string",
+      "description": "Nom du processus responsable"
+    },
+    "dateFinPrevue": {
+      "type": "string",
+      "format": "date",
+      "description": "Date d'\u00e9ch\u00e9ance pr\u00e9vue"
+    },
+    "dateRealisationEffective": {
+      "type": "string",
+      "format": "date",
+      "description": "Date de r\u00e9alisation effective"
+    },
+    "statut": {
+      "type": "string",
+      "enum": [
+        "En cours",
+        "R\u00e9alis\u00e9e",
+        "En standby",
+        "Abandonn\u00e9e"
+      ],
+      "default": "En cours",
+      "description": "Statut de l'action (passe auto \u00e0 'En cours' \u00e0 la prise en charge)"
+    },
+    "commentaireRealisation": {
+      "type": "string",
+      "description": "Commentaire de r\u00e9alisation (obligatoire pour passer \u00e0 R\u00e9alis\u00e9e)"
+    },
+    "piecesJustificatives": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL du fichier upload\u00e9"
+          },
+          "nom": {
+            "type": "string",
+            "description": "Nom original du fichier"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "description": "Pi\u00e8ces justificatives, au moins une pour passer \u00e0 R\u00e9alis\u00e9e (url + nom ; anciens \u00e9l\u00e9ments au format string URL restent accept\u00e9s \u00e0 l'affichage)"
+    },
+    "retardNotifie": {
+      "type": "boolean",
+      "default": false,
+      "description": "Indique que le retard de cette action a d\u00e9j\u00e0 donn\u00e9 lieu \u00e0 une notification QHSE (garde anti-spam du scan quotidien)"
+    },
+    "rappelPreventifNotifie": {
+      "type": "boolean",
+      "default": false,
+      "description": "Indique que le rappel pr\u00e9ventif d'\u00e9ch\u00e9ance (J-3) a d\u00e9j\u00e0 \u00e9t\u00e9 envoy\u00e9 pour cette action (garde anti-spam du scan quotidien ; remis \u00e0 false si l'\u00e9ch\u00e9ance est modifi\u00e9e)"
+    },
+    "assigneEmail": {
+      "type": "string",
+      "description": "Email du membre d'\u00e9quipe individuellement assign\u00e9 \u00e0 l'action (sous-assignation par le pilote, optionnelle)"
+    },
+    "assigneNom": {
+      "type": "string",
+      "description": "Nom d'affichage du membre assign\u00e9"
+    },
+    "dateAssignation": {
+      "type": "string",
+      "format": "date",
+      "description": "Date \u00e0 laquelle le pilote a fait la sous-assignation"
+    },
+    "retardAssigneNotifie": {
+      "type": "boolean",
+      "default": false,
+      "description": "Indique que la relance de retard a d\u00e9j\u00e0 \u00e9t\u00e9 envoy\u00e9e individuellement au membre assign\u00e9 (garde anti-spam distincte de retardNotifie)"
+    },
+    "historique": {
+      "type": "array",
+      "description": "Historique des changements de statut et d'assignation (lecture seule, preuve d'audit)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "Date et heure du changement (ISO)"
+          },
+          "ancienStatut": {
+            "type": "string",
+            "description": "Statut avant le changement"
+          },
+          "nouveauStatut": {
+            "type": "string",
+            "description": "Statut apr\u00e8s le changement"
+          },
+          "auteurEmail": {
+            "type": "string",
+            "description": "Email de l'auteur du changement"
+          },
+          "auteurNom": {
+            "type": "string",
+            "description": "Nom de l'auteur du changement"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type d'entr\u00e9e d'historique (ex: 'assignation' ; vide pour un changement de statut)"
+          },
+          "ancienAssigne": {
+            "type": "string",
+            "description": "Email du membre assign\u00e9 avant le changement d'assignation"
+          },
+          "nouvelAssigne": {
+            "type": "string",
+            "description": "Email du membre assign\u00e9 apr\u00e8s le changement d'assignation"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "acId",
+    "description"
+  ],
+  "rls": {
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "qhse"
+          }
+        },
+        {
+          "data.initiateurEmail": "{{user.email}}"
+        },
+        {
+          "data.responsablesProcessus": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        }
+      ]
+    },
+    "read": {
+      "$or": [
+        {
+          "data.initiateurEmail": "{{user.email}}"
+        },
+        {
+          "data.responsable": "{{user.email}}"
+        },
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "data.responsablesProcessus": "{{user.email}}"
+        },
+        {
+          "data.assigneEmail": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "qhse"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "direction"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.responsable": "{{user.email}}"
+        },
+        {
+          "data.responsablesProcessus": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "data.assigneEmail": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "qhse"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "qhse"
+      }
+    }
+  }
+}
